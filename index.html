@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base Creator Coins - Trust Scored Market Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #0052FF 0%, #0028A0 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .base-logo {
+            width: 56px;
+            height: 56px;
+            background: #0052FF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: white;
+            font-size: 24px;
+        }
+
+        .title-group h1 {
+            font-size: 32px;
+            font-weight: 900;
+            color: #000;
+            letter-spacing: -0.5px;
+        }
+
+        .title-group p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .network-badge {
+            background: #0052FF;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .network-badge::before {
+            content: "●";
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+            border-radius: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 900;
+            color: #0052FF;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            background: white;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #0052FF;
+            box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.1);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .coins-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .coin-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .coin-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.16);
+            border-color: #0052FF;
+        }
+
+        .coin-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 2fr 1.5fr;
+            gap: 24px;
+            align-items: center;
+        }
+
+        @media (max-width: 1024px) {
+            .coin-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+
+        .coin-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .coin-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #0052FF 0%, #0028A0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .coin-details h3 {
+            font-size: 18px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .verified-badge {
+            background: #0052FF;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .coin-meta {
+            color: #666;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .coin-price {
+            text-align: center;
+        }
+
+        .price-value {
+            font-size: 28px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 4px;
+        }
+
+        .price-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .price-change.positive {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .price-change.negative {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .coin-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            background: #f8f9ff;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .stat-box-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .stat-box-value {
+            font-size: 16px;
+            font-weight: 900;
+            color: #000;
+        }
+
+        .trust-score-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+            padding: 20px;
+            border-radius: 16px;
+            border: 2px solid #e0e7ff;
+        }
+
+        .trust-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .trust-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        .trust-score {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .trust-score.high { color: #2E7D32; }
+        .trust-score.medium { color: #0052FF; }
+        .trust-score.low { color: #F57C00; }
+        .trust-score.very-low { color: #C62828; }
+
+        .trust-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .trust-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .trust-bar-fill.high { background: #2E7D32; }
+        .trust-bar-fill.medium { background: #0052FF; }
+        .trust-bar-fill.low { background: #F57C00; }
+        .trust-bar-fill.very-low { background: #C62828; }
+
+        .info-panel {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 32px;
+            margin-top: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .info-panel h3 {
+            font-size: 20px;
+            font-weight: 900;
+            color: #000;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .info-section h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 12px;
+        }
+
+        .info-section ul {
+            list-style: none;
+        }
+
+        .info-section li {
+            padding: 8px 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .score-legend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+        }
+
+        .legend-color.high { background: #2E7D32; }
+        .legend-color.medium { background: #0052FF; }
+        .legend-color.low { background: #F57C00; }
+        .legend-color.very-low { background: #C62828; }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        const App = () => {
+            const [searchTerm, setSearchTerm] = useState('');
+            const [sortBy, setSortBy] = useState('marketCap');
+            const [filterTrust, setFilterTrust] = useState('all');
+
+            const coins = [
+                {
+                    id: 1,
+                    name: 'BuilderDAO',
+                    symbol: 'BLDR',
+                    creator: '@jessepollak',
+                    price: 0.042,
+                    change24h: 12.5,
+                    marketCap: 2400000,
+                    volume24h: 180000,
+                    trustScore: 92,
+                    verified: true,
+                    talentScore: 1850,
+                    holders: 3420
+                },
+                {
+                    id: 2,
+                    name: 'CreatorToken',
+                    symbol: 'CRTR',
+                    creator: '@basedbuilder',
+                    price: 0.018,
+                    change24h: -3.2,
+                    marketCap: 890000,
+                    volume24h: 45000,
+                    trustScore: 78,
+                    verified: true,
+                    talentScore: 1240,
+                    holders: 1560
+                },
+                {
+                    id: 3,
+                    name: 'ArtistCoin',
+                    symbol: 'ART',
+                    creator: '@cryptoartist',
+                    price: 0.095,
+                    change24h: 24.8,
+                    marketCap: 4200000,
+                    volume24h: 320000,
+                    trustScore: 88,
+                    verified: true,
+                    talentScore: 1680,
+                    holders: 5240
+                },
+                {
+                    id: 4,
+                    name: 'DevToken',
+                    symbol: 'DEVT',
+                    creator: '@ethbuilder',
+                    price: 0.031,
+                    change24h: 8.1,
+                    marketCap: 1500000,
+                    volume24h: 92000,
+                    trustScore: 65,
+                    verified: false,
+                    talentScore: 980,
+                    holders: 2140
+                },
+                {
+                    id: 5,
+                    name: 'BasedCoin',
+                    symbol: 'BASED',
+                    creator: '@onchainmax',
+                    price: 0.152,
+                    change24h: -1.5,
+                    marketCap: 6800000,
+                    volume24h: 450000,
+                    trustScore: 95,
+                    verified: true,
+                    talentScore: 2150,
+                    holders: 8920
+                },
+                {
+                    id: 6,
+                    name: 'OnchainMusic',
+                    symbol: 'MUSIC',
+                    creator: '@basemusician',
+                    price: 0.067,
+                    change24h: 15.3,
+                    marketCap: 3100000,
+                    volume24h: 210000,
+                    trustScore: 85,
+                    verified: true,
+                    talentScore: 1520,
+                    holders: 4680
+                },
+                {
+                    id: 7,
+                    name: 'DesignDAO',
+                    symbol: 'DSGN',
+                    creator: '@basedesigner',
+                    price: 0.023,
+                    change24h: -5.7,
+                    marketCap: 720000,
+                    volume24h: 38000,
+                    trustScore: 58,
+                    verified: false,
+                    talentScore: 820,
+                    holders: 1230
+                },
+                {
+                    id: 8,
+                    name: 'GameFi Token',
+                    symbol: 'GAME',
+                    creator: '@basegamer',
+                    price: 0.185,
+                    change24h: 31.2,
+                    marketCap: 8500000,
+                    volume24h: 620000,
+                    trustScore: 91,
+                    verified: true,
+                    talentScore: 1980,
+                    holders: 11240
+                }
+            ];
+
+            const getTrustClass = (score) => {
+                if (score >= 90) return 'high';
+                if (score >= 75) return 'medium';
+                if (score >= 60) return 'low';
+                return 'very-low';
+            };
+
+            const formatNumber = (num) => {
+                if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
+                if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
+                return `$${num.toFixed(2)}`;
+            };
+
+            const filteredCoins = useMemo(() => {
+                return coins
+                    .filter(coin => {
+                        const matchesSearch = coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                            coin.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                            coin.creator.toLowerCase().includes(searchTerm.toLowerCase());
+                        
+                        if (filterTrust === 'high') return matchesSearch && coin.trustScore >= 85;
+                        if (filterTrust === 'medium') return matchesSearch && coin.trustScore >= 65 && coin.trustScore < 85;
+                        if (filterTrust === 'low') return matchesSearch && coin.trustScore < 65;
+                        return matchesSearch;
+                    })
+                    .sort((a, b) => {
+                        if (sortBy === 'marketCap') return b.marketCap - a.marketCap;
+                        if (sortBy === 'trust') return b.trustScore - a.trustScore;
+                        if (sortBy === 'change') return b.change24h - a.change24h;
+                        return 0;
+                    });
+            }, [searchTerm, sortBy, filterTrust]);
+
+            const totalMarketCap = coins.reduce((sum, coin) => sum + coin.marketCap, 0);
+            const totalVolume = coins.reduce((sum, coin) => sum + coin.volume24h, 0);
+            const avgTrustScore = Math.round(coins.reduce((sum, coin) => sum + coin.trustScore, 0) / coins.length);
+
+            return (
+                <div className="container">
+                    <div className="header">
+                        <div className="header-top">
+                            <div className="logo-section">
+                                <div className="base-logo">B</div>
+                                <div className="title-group">
+                                    <h1>Base Creator Coins</h1>
+                                    <p>Trust-scored market tracker for builder tokens</p>
+                                </div>
+                            </div>
+                            <div className="network-badge">
+                                Base Network
+                            </div>
+                        </div>
+                        <div className="stats-bar">
+                            <div className="stat-item">
+                                <div className="stat-label">Total Market Cap</div>
+                                <div className="stat-value">{formatNumber(totalMarketCap)}</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-label">24h Volume</div>
+                                <div className="stat-value">{formatNumber(totalVolume)}</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-label">Tracked Coins</div>
+                                <div className="stat-value">{coins.length}</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-label">Avg Trust Score</div>
+                                <div className="stat-value">{avgTrustScore}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="controls">
+                        <div className="controls-grid">
+                            <div className="input-group">
+                                <span className="input-icon">🔍</span>
+                                <input
+                                    type="text"
+                                    placeholder="Search coins, symbols, or creators..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
+                            
+                            <div className="input-group">
+                                <span className="input-icon">📊</span>
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                >
+                                    <option value="marketCap">Sort by Market Cap</option>
+                                    <option value="trust">Sort by Trust Score</option>
+                                    <option value="change">Sort by 24h Change</option>
+                                </select>
+                            </div>
+
+                            <div className="input-group">
+                                <span className="input-icon">🛡️</span>
+                                <select
+                                    value={filterTrust}
+                                    onChange={(e) => setFilterTrust(e.target.value)}
+                                >
+                                    <option value="all">All Trust Levels</option>
+                                    <option value="high">High Trust (85+)</option>
+                                    <option value="medium">Medium Trust (65-84)</option>
+                                    <option value="low">Low Trust (&lt;65)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="coins-list">
+                        {filteredCoins.length === 0 ? (
+                            <div className="no-results">
+                                No coins found matching your criteria. Try adjusting your filters.
+                            </div>
+                        ) : (
+                            filteredCoins.map((coin) => (
+                                <div key={coin.id} className="coin-card">
+                                    <div className="coin-grid">
+                                        <div className="coin-info">
+                                            <div className="coin-avatar">
+                                                {coin.symbol.substring(0, 2)}
+                                            </div>
+                                            <div className="coin-details">
+                                                <h3>
+                                                    {coin.name}
+                                                    {coin.verified && <span className="verified-badge">✓ VERIFIED</span>}
+                                                </h3>
+                                                <div className="coin-meta">
+                                                    {coin.symbol} · {coin.creator}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="coin-price">
+                                            <div className="price-value">${coin.price.toFixed(3)}</div>
+                                            <div className={`price-change ${coin.change24h >= 0 ? 'positive' : 'negative'}`}>
+                                                {coin.change24h >= 0 ? '↗' : '↘'} {Math.abs(coin.change24h).toFixed(2)}%
+                                            </div>
+                                        </div>
+
+                                        <div className="coin-stats">
+                                            <div className="stat-box">
+                                                <div className="stat-box-label">Market Cap</div>
+                                                <div className="stat-box-value">{formatNumber(coin.marketCap)}</div>
+                                            </div>
+                                            <div className="stat-box">
+                                                <div className="stat-box-label">24h Volume</div>
+                                                <div className="stat-box-value">{formatNumber(coin.volume24h)}</div>
+                                            </div>
+                                            <div className="stat-box">
+                                                <div className="stat-box-label">Holders</div>
+                                                <div className="stat-box-value">{coin.holders.toLocaleString()}</div>
+                                            </div>
+                                            <div className="stat-box">
+                                                <div className="stat-box-label">Talent Score</div>
+                                                <div className="stat-box-value">{coin.talentScore}</div>
+                                            </div>
+                                        </div>
+
+                                        <div className="trust-score-card">
+                                            <div className="trust-header">
+                                                <span className="trust-label">Trust Score</span>
+                                                <span style={{fontSize: '20px'}}>🛡️</span>
+                                            </div>
+                                            <div className={`trust-score ${getTrustClass(coin.trustScore)}`}>
+                                                {coin.trustScore}<span style={{fontSize: '20px', color: '#999'}}>/100</span>
+                                            </div>
+                                            <div className="trust-bar">
+                                                <div 
+                                                    className={`trust-bar-fill ${getTrustClass(coin.trustScore)}`}
+                                                    style={{width: `${coin.trustScore}%`}}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+
+                    <div className="info-panel">
+                        <h3>🛡️ Trust Score Methodology</h3>
+                        <div className="info-grid">
+                            <div className="info-section">
+                                <h4>Trust Scoring Combines:</h4>
+                                <ul>
+                                    <li>📊 Talent Protocol builder reputation and on-chain history</li>
+                                    <li>💬 Community engagement metrics and social activity</li>
+                                    <li>👥 Token holder distribution and wallet analysis</li>
+                                    <li>⚡ Transaction patterns and liquidity depth</li>
+                                    <li>✓ Verification status and identity confirmation</li>
+                                </ul>
+                            </div>
+                            <div className="info-section">
+                                <h4>Score Ranges:</h4>
+                                <ul>
+                                    <li className="score-legend">
+                                        <div className="legend-color high"></div>
+                                        <strong>90-100:</strong> Highly trusted established builders
+                                    </li>
+                                    <li className="score-legend">
+                                        <div className="legend-color medium"></div>
+                                        <strong>75-89:</strong> Verified creators with solid reputation
+                                    </li>
+                                    <li className="score-legend">
+                                        <div className="legend-color low"></div>
+                                        <strong>60-74:</strong> Emerging builders gaining traction
+                                    </li>
+                                    <li className="score-legend">
+                                        <div className="legend-color very-low"></div>
+                                        <strong>&lt;60:</strong> New or unverified projects
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="footer">
+                        Built on Base · Powered by Talent Protocol · Data updates every 30 seconds
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

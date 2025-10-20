@@ -547,7 +547,34 @@ gap: 24px;
     const { useState, useEffect, useMemo, useCallback } = React;
 <script type="text/babel">
 const { useState, useEffect, useMemo, useCallback } = React;
+// Request notification permission
+const requestNotificationPermission = async () => {
+  if ('Notification' in window) {
+    const permission = await Notification.requestPermission();
+    return permission === 'granted';
+  }
+  return false;
+};
 
+// Send price alert notification
+const sendPriceAlert = (coin, price, change) => {
+  if (Notification.permission === 'granted') {
+    new Notification(`${coin.symbol} Price Alert!`, {
+      body: `${coin.name} is now $${price.toFixed(2)} (${change > 0 ? '+' : ''}${change.toFixed(2)}%)`,
+      icon: '/icon.png',
+      tag: coin.symbol
+    });
+  }
+};
+
+// Check price thresholds
+useEffect(() => {
+  coinsWithLiveData.forEach(coin => {
+    if (Math.abs(coin.change24h) > 10) {
+      sendPriceAlert(coin, coin.price, coin.change24h);
+    }
+  });
+}, [coinsWithLiveData]);
 const App = () => {
     // ============= EXISTING STATE (keep as is) =============
     const [searchTerm, setSearchTerm] = useState('');

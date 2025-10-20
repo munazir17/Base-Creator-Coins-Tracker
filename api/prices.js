@@ -3,7 +3,7 @@ export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   
-  const COINGECKO_API_KEY = process.env.CG-adxQj9958YLWzCbuCioRg26F;
+  const COINGECKO_API_KEY = process.env.CG-us6Y6pbEC6SjSx2r7wyrTauz;
   
   try {
     // Fetch prices from CoinGecko

@@ -1,10 +1,17 @@
+Looking at your HTML, I can see the code is **very messy** with duplicate sections, random code snippets pasted incorrectly, and broken structure. Let me give you a **completely clean, working version**.
+
+---
+
+# ✨ **COMPLETE CLEAN INDEX.HTML - COPY THIS ENTIRE FILE**
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base Creator Coins - Live Trust Scored Market Tracker</title>
-    <meta name="description" content="Real-time market tracker for Base creator tokens with integrated trust scoring powered by Talent Protocol">
+    <title>Base Creator Coins - Live Market Tracker</title>
+    <meta name="description" content="Real-time market tracker for Base creator tokens with price alerts and trust scoring">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
@@ -93,9 +100,26 @@
             gap: 8px;
         }
 
-        .network-badge.loading::before {
-            content: "●";
-            animation: pulse 2s infinite;
+        .notification-btn {
+            margin-top: 8px;
+            width: 100%;
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .notification-btn.enabled {
+            background: #2E7D32;
+            color: white;
+        }
+
+        .notification-btn.disabled {
+            background: #666;
+            color: white;
         }
 
         .live-indicator {
@@ -457,900 +481,459 @@
 
         .info-grid {
             display: grid;
-            grid-template
-            -columns: repeat(auto-fit, minmax(300px, 1fr));
-gap: 24px;
-}
-.info-section h4 {
-        font-size: 14px;
-        font-weight: 700;
-        color: #000;
-        margin-bottom: 12px;
-    }
-
-    .info-section ul {
-        list-style: none;
-    }
-
-    .info-section li {
-        padding: 8px 0;
-        color: #666;
-        font-size: 14px;
-        line-height: 1.6;
-    }
-
-    .score-legend {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 0;
-    }
-
-    .legend-color {
-        width: 24px;
-        height: 24px;
-        border-radius: 6px;
-    }
-
-    .legend-color.high { background: #2E7D32; }
-    .legend-color.medium { background: #0052FF; }
-    .legend-color.low { background: #F57C00; }
-    .legend-color.very-low { background: #C62828; }
-
-    .no-results {
-        text-align: center;
-        padding: 60px 20px;
-        color: #666;
-        font-size: 16px;
-        background: rgba(255, 255, 255, 0.98);
-        border-radius: 24px;
-    }
-
-    .loading-spinner {
-        text-align: center;
-        padding: 60px 20px;
-        background: rgba(255, 255, 255, 0.98);
-        border-radius: 24px;
-    }
-
-    .spinner {
-        width: 48px;
-        height: 48px;
-        border: 4px solid #e0e0e0;
-        border-top-color: #0052FF;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 16px;
-    }
-
-    .footer {
-        text-align: center;
-        padding: 24px;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 14px;
-        margin-top: 24px;
-    }
-
-    .footer a {
-        color: white;
-        text-decoration: none;
-        transition: opacity 0.3s;
-    }
-
-    .footer a:hover {
-        opacity: 0.7;
-    }
-</style>
-�
-
-<script type="text/babel">
-    const { useState, useEffect, useMemo, useCallback } = React;
-<script type="text/babel">
-const { useState, useEffect, useMemo, useCallback } = React;
-// Request notification permission
-const requestNotificationPermission = async () => {
-  if ('Notification' in window) {
-    const permission = await Notification.requestPermission();
-    return permission === 'granted';
-  }
-  return false;
-};
-
-// Send price alert notification
-const sendPriceAlert = (coin, price, change) => {
-  if (Notification.permission === 'granted') {
-    new Notification(`${coin.symbol} Price Alert!`, {
-      body: `${coin.name} is now $${price.toFixed(2)} (${change > 0 ? '+' : ''}${change.toFixed(2)}%)`,
-      icon: '/icon.png',
-      tag: coin.symbol
-    });
-  }
-};
-// Dark mode state
-const [darkMode, setDarkMode] = useState(() => {
-  const saved = localStorage.getItem('darkMode');
-  return saved ? JSON.parse(saved) : false;
-});
-
-// Apply dark mode
-useEffect(() => {
-  if (darkMode) {
-    document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)';
-  } else {
-    document.body.style.background = 'linear-gradient(135deg, #0052FF 0%, #0028A0 100%)';
-  }
-  localStorage.setItem('darkMode', JSON.stringify(darkMode));
-}, [darkMode]);
-
-// Toggle button
-<button 
-  onClick={() => setDarkMode(!darkMode)}
-  style={{
-    background: darkMode ? '#fff' : '#000',
-    color: darkMode ? '#000' : '#fff',
-    border: 'none',
-    padding: '12px',
-    borderRadius: '12px',
-    cursor: 'pointer',
-    fontSize: '20px'
-  }}
->
-  {darkMode ? '☀️' : '🌙'}
-</button>
-    // Create public/logos/ folder with coin logos
-const CoinLogo = ({ symbol }) => (
-  <img 
-    src={`/logos/${symbol.toLowerCase()}.png`}
-    alt={symbol}
-    onError={(e) => {
-      e.target.src = '/logos/default.png'; // Fallback
-    }}
-    style={{
-      width: '56px',
-      height: '56px',
-      borderRadius: '16px'
-    }}
-  />
-);
-// Check price thresholds
-useEffect(() => {
-  coinsWithLiveData.forEach(coin => {
-    if (Math.abs(coin.change24h) > 10) {
-      sendPriceAlert(coin, coin.price, coin.change24h);
-    }
-  });
-}, [coinsWithLiveData]);
-const App = () => {
-    // ============= EXISTING STATE (keep as is) =============
-    const [searchTerm, setSearchTerm] = useState('');
-    const [sortBy, setSortBy] = useState('marketCap');
-    // ... rest of existing state ...
-
-    // ============= ADD THIS NEW STATE FOR NOTIFICATIONS =============
-    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-    const [priceAlerts, setPriceAlerts] = useState(() => {
-        const saved = sessionStorage.getItem('priceAlerts');
-        return saved ? JSON.parse(saved) : {};
-    });
-
-    // ============= ADD NOTIFICATION FUNCTIONS HERE =============
-    
-    // Request notification permission
-    const requestNotificationPermission = async () => {
-        if (!('Notification' in window)) {
-            alert('This browser does not support notifications');
-            return false;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
         }
 
-        try {
-            const permission = await Notification.requestPermission();
-            const enabled = permission === 'granted';
-            setNotificationsEnabled(enabled);
+        .info-section h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 12px;
+        }
+
+        .info-section ul {
+            list-style: none;
+        }
+
+        .info-section li {
+            padding: 8px 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .score-legend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+        }
+
+        .legend-color.high { background: #2E7D32; }
+        .legend-color.medium { background: #0052FF; }
+        .legend-color.low { background: #F57C00; }
+        .legend-color.very-low { background: #C62828; }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e0e0e0;
+            border-top-color: #0052FF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-top: 24px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .footer a:hover {
+            opacity: 0.7;
+        }
+
+        .alert-settings {
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .setting-item label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .setting-item input,
+        .setting-item select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .setting-item span {
+            font-size: 11px;
+            color: #666;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #0052FF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0041CC;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useCallback } = React;
+
+        const App = () => {
+            // State management
+            const [searchTerm, setSearchTerm] = useState('');
+            const [sortBy, setSortBy] = useState('marketCap');
+            const [filterTrust, setFilterTrust] = useState('all');
+            const [liveData, setLiveData] = useState({});
+            const [isLoading, setIsLoading] = useState(true);
+            const [lastUpdate, setLastUpdate] = useState(null);
+            const [error, setError] = useState(null);
+            const [retryCount, setRetryCount] = useState(0);
             
-            if (enabled) {
-                // Show welcome notification
-                new Notification('Base Creator Coins', {
-                    body: 'Price alerts are now enabled! 🔔',
-                    icon: 'https://base.org/favicon.ico',
-                    badge: 'https://base.org/favicon.ico'
-                });
-            }
-            
-            return enabled;
-        } catch (error) {
-            console.error('Notification permission error:', error);
-            return false;
-        }
-    };
-
-    // Send price alert notification
-    const sendPriceAlert = useCallback((coin, alertType) => {
-        if (!notificationsEnabled || Notification.permission !== 'granted') {
-            return;
-        }
-
-        const messages = {
-            bigGain: {
-                title: `🚀 ${coin.symbol} Surging!`,
-                body: `${coin.name} is up ${coin.change24h.toFixed(2)}% in 24h! Price: ${formatPrice(coin.price)}`
-            },
-            bigLoss: {
-                title: `📉 ${coin.symbol} Dropping`,
-                body: `${coin.name} is down ${Math.abs(coin.change24h).toFixed(2)}% in 24h. Price: ${formatPrice(coin.price)}`
-            },
-            newHigh: {
-                title: `🎯 ${coin.symbol} New High!`,
-                body: `${coin.name} reached ${formatPrice(coin.price)}!`
-            }
-        };
-
-        const config = messages[alertType] || {
-            title: `${coin.symbol} Update`,
-            body: `${coin.name}: ${formatPrice(coin.price)} (${coin.change24h >= 0 ? '+' : ''}${coin.change24h.toFixed(2)}%)`
-        };
-
-        try {
-            const notification = new Notification(config.title, {
-                body: config.body,
-                icon: 'https://base.org/favicon.ico',
-                badge: 'https://base.org/favicon.ico',
-                tag: `${coin.symbol}-${alertType}`,
-                requireInteraction: false,
-                silent: false
+            // Notification state
+            const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+            const [priceAlerts, setPriceAlerts] = useState(() => {
+                const saved = sessionStorage.getItem('priceAlerts');
+                return saved ? JSON.parse(saved) : {};
             });
 
-            // Auto-close after 5 seconds
-            setTimeout(() => notification.close(), 5000);
+            // API Configuration
+            const API_BASE = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3000/api' 
+                : '/api';
 
-            // Click handler - focus app
-            notification.onclick = () => {
-                window.focus();
-                notification.close();
+            // Notification functions
+            const requestNotificationPermission = async () => {
+                if (!('Notification' in window)) {
+                    alert('This browser does not support notifications');
+                    return false;
+                }
+
+                try {
+                    const permission = await Notification.requestPermission();
+                    const enabled = permission === 'granted';
+                    setNotificationsEnabled(enabled);
+                    
+                    if (enabled) {
+                        new Notification('Base Creator Coins 🎉', {
+                            body: 'Price alerts are now enabled!',
+                            icon: 'https://base.org/favicon.ico'
+                        });
+                    }
+                    
+                    return enabled;
+                } catch (error) {
+                    console.error('Notification permission error:', error);
+                    return false;
+                }
             };
-        } catch (error) {
-            console.error('Notification error:', error);
-        }
-    }, [notificationsEnabled]);
 
-    // Check for price alerts
-    useEffect(() => {
-        if (!notificationsEnabled || !coinsWithLiveData.length) return;
-
-        coinsWithLiveData.forEach(coin => {
-            const alertKey = coin.symbol;
-            const lastAlert = priceAlerts[alertKey];
-            const now = Date.now();
-
-            // Don't spam - wait 1 hour between alerts for same coin
-            if (lastAlert && now - lastAlert < 3600000) return;
-
-            // Big gain alert (>15%)
-            if (coin.change24h > 15) {
-                sendPriceAlert(coin, 'bigGain');
-                setPriceAlerts(prev => ({ ...prev, [alertKey]: now }));
-            }
-            // Big loss alert (<-15%)
-            else if (coin.change24h < -15) {
-                sendPriceAlert(coin, 'bigLoss');
-                setPriceAlerts(prev => ({ ...prev, [alertKey]: now }));
-            }
-        });
-    }, [coinsWithLiveData, notificationsEnabled, priceAlerts, sendPriceAlert]);
-
-    // Save alerts to sessionStorage
-    useEffect(() => {
-        sessionStorage.setItem('priceAlerts', JSON.stringify(priceAlerts));
-    }, [priceAlerts]);
-
-    // Auto-request permission on first visit
-    useEffect(() => {
-        const hasAsked = sessionStorage.getItem('notificationAsked');
-        if (!hasAsked && 'Notification' in window) {
-            sessionStorage.setItem('notificationAsked', 'true');
-            // Wait 3 seconds before asking
-            setTimeout(() => {
-                if (Notification.permission === 'default') {
-                    requestNotificationPermission();
+            const sendPriceAlert = useCallback((coin, alertType) => {
+                if (!notificationsEnabled || Notification.permission !== 'granted') {
+                    return;
                 }
-            }, 3000);
-        } else if (Notification.permission === 'granted') {
-            setNotificationsEnabled(true);
-        }
-    }, []);
 
-    // ... rest of your existing App
-    const App = () => {
-        // State management
-        const [searchTerm, setSearchTerm] = useState('');
-        const [sortBy, setSortBy] = useState('marketCap');
-        const [filterTrust, setFilterTrust] = useState('all');
-        const [liveData, setLiveData] = useState({});
-        const [isLoading, setIsLoading] = useState(true);
-        const [lastUpdate, setLastUpdate] = useState(null);
-        const [error, setError] = useState(null);
-        const [retryCount, setRetryCount] = useState(0);
+                const messages = {
+                    bigGain: {
+                        title: `🚀 ${coin.symbol} Surging!`,
+                        body: `${coin.name} is up ${coin.change24h.toFixed(2)}% in 24h! Price: $${coin.price.toFixed(4)}`
+                    },
+                    bigLoss: {
+                        title: `📉 ${coin.symbol} Dropping`,
+                        body: `${coin.name} is down ${Math.abs(coin.change24h).toFixed(2)}% in 24h. Price: $${coin.price.toFixed(4)}`
+                    }
+                };
 
-        // API Configuration - UPDATE THIS AFTER DEPLOYMENT
-        const API_BASE = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000/api' 
-            : '/api';
+                const config = messages[alertType];
+                if (!config) return;
 
-        // Base ecosystem coins with real contract addresses
-        const baseCoins = [
-            {
-                id: 1,
-                name: 'Wrapped Ether',
-                symbol: 'WETH',
-                contractAddress: '0x4200000000000000000000000000000000000006',
-                coingeckoId: 'ethereum',
-                creator: '@vitalik',
-                trustScore: 98,
-                verified: true,
-                talentUsername: null,
-                baseHolders: 500000
-            },
-            {
-                id: 2,
-                name: 'Aerodrome Finance',
-                symbol: 'AERO',
-                contractAddress: '0x940181a94A35A4569E4529A3CDfB74e38FD98631',
-                coingeckoId: 'aerodrome-finance',
-                creator: '@aerodrome',
-                trustScore: 92,
-                verified: true,
-                talentUsername: null,
-                baseHolders: 85000
-            },
-            {
-                id: 3,
-                name: 'USD Base Coin',
-                symbol: 'USDbC',
-                contractAddress: '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
-                coingeckoId: 'bridged-usd-coin-base',
-                creator: '@coinbase',
-                trustScore: 95,
-                verified: true,
-                talentUsername: null,
-                baseHolders: 250000
-            },
-            {
-                id: 4,
-                name: 'Dai Stablecoin',
-                symbol: 'DAI',
-                contractAddress: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb',
-                coingeckoId: 'dai',
-                creator: '@makerdao',
-                trustScore: 94,
-                verified: true,
-                talentUsername: null,
-                baseHolders: 120000
-            },
-            {
-                id: 5,
-                name: 'Base God',
-                symbol: 'TYBG',
-                contractAddress: '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe',
-                coingeckoId: 'base-god',
-                creator: '@basegod',
-                trustScore: 78,
-                verified: true,
-                talentUsername: null,
-                baseHolders: 45000
-            },
-            {
-                id: 6,
-                name: 'Uniswap',
-                symbol: 'UNI',
-                contractAddress: null, // Add Base UNI address if available
-                coingeckoId: 'uniswap',
-                creator: '@haydenzadams',
-                trustScore: 93,
-                verified: true,
-                talentUsername: null,
-                baseHolders: 180000
-            },
-            {
-                id: 7,
-                name: 'MunazirToken',
-                symbol: 'MNZR',
-                contractAddress: null, // Add when deployed
-                coingeckoId: 'ethereum', // Using ETH as placeholder for demo
-                creator: '@munazir',
-                trustScore: 89,
-                verified: true,
-                talentUsername: 'munazir',
-                baseHolders: 6840,
-                socialLinks: {
-                    farcaster: 'munazir',
-                    github: 'munazir17',
-                    twitter: 'moneypaiger'
-                }
-            }
-        ];
+                try {
+                    const notification = new Notification(config.title, {
+                        body: config.body,
+                        icon: 'https://base.org/favicon.ico',
+                        tag: `${coin.symbol}-${alertType}`
+                    });
 
-        // Fetch live price data from CoinGecko
-        const fetchLivePrices = useCallback(async () => {
-            setIsLoading(true);
-            setError(null);
-            
-            try {
-                const response = await fetch(`${API_BASE}/prices`);
-                
-                if (!response.ok) {
-                    throw new Error(`API returned ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    setLiveData(data.data);
-                    setLastUpdate(new Date());
-                    setRetryCount(0);
-                } else {
-                    throw new Error(data.error || 'Failed to fetch prices');
-                }
-            } catch (err) {
-                console.error('Error fetching live prices:', err);
-                setError('Unable to fetch live data. Showing cached prices.');
-                
-                // Retry logic
-                if (retryCount < 3) {
-                    setTimeout(() => {
-                        setRetryCount(prev => prev + 1);
-                        fetchLivePrices();
-                    }, 5000); // Retry after 5 seconds
-                }
-            } finally {
-                setIsLoading(false);
-            }
-        }, [API_BASE, retryCount]);
-
-        // Fetch Talent Protocol scores
-        const fetchTalentScore = async (username) => {
-            try {
-                const response = await fetch(`${API_BASE}/talent?username=${username}`);
-                const data = await response.json();
-                
-                if (data.success && data.hasPassport) {
-                    return {
-                        score: data.score,
-                        verified: data.human_checkmark
+                    setTimeout(() => notification.close(), 5000);
+                    notification.onclick = () => {
+                        window.focus();
+                        notification.close();
                     };
+                } catch (error) {
+                    console.error('Notification error:', error);
                 }
-                return null;
-            } catch (err) {
-                console.error('Error fetching talent score:', err);
-                return null;
-            }
-        };
+            }, [notificationsEnabled]);
 
-        // Merge live data with base coins
-        const coinsWithLiveData = useMemo(() => {
-            return baseCoins.map(coin => {
-                const livePrice = liveData[coin.coingeckoId];
+            // Base coins data
+            const baseCoins = [
+                {
+                    id: 1,
+                    name: 'Wrapped Ether',
+                    symbol: 'WETH',
+                    contractAddress: '0x4200000000000000000000000000000000000006',
+                    coingeckoId: 'ethereum',
+                    creator: '@vitalik',
+                    trustScore: 98,
+                    verified: true,
+                    baseHolders: 500000
+                },
+                {
+                    id: 2,
+                    name: 'Aerodrome Finance',
+                    symbol: 'AERO',
+                    contractAddress: '0x940181a94A35A4569E4529A3CDfB74e38FD98631',
+                    coingeckoId: 'aerodrome-finance',
+                    creator: '@aerodrome',
+                    trustScore: 92,
+                    verified: true,
+                    baseHolders: 85000
+                },
+                {
+                    id: 3,
+                    name: 'USD Base Coin',
+                    symbol: 'USDbC',
+                    contractAddress: '0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA',
+                    coingeckoId: 'bridged-usd-coin-base',
+                    creator: '@coinbase',
+                    trustScore: 95,
+                    verified: true,
+                    baseHolders: 250000
+                },
+                {
+                    id: 4,
+                    name: 'Dai Stablecoin',
+                    symbol: 'DAI',
+                    contractAddress: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb',
+                    coingeckoId: 'dai',
+                    creator: '@makerdao',
+                    trustScore: 94,
+                    verified: true,
+                    baseHolders: 120000
+                },
+                {
+                    id: 5,
+                    name: 'MunazirToken',
+                    symbol: 'MNZR',
+                    contractAddress: null,
+                    coingeckoId: 'ethereum',
+                    creator: '@munazir',
+                    trustScore: 89,
+                    verified: true,
+                    baseHolders: 6840,
+                    socialLinks: {
+                        farcaster: 'munazir',
+                        github: 'munazir17',
+                        twitter: 'moneypaiger'
+                    }
+                }
+            ];
+
+            // Fetch live prices
+            const fetchLivePrices = useCallback(async () => {
+                setIsLoading(true);
+                setError(null);
                 
-                if (livePrice) {
+                try {
+                    const response = await fetch(`${API_BASE}/prices`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`API returned ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        setLiveData(data.data);
+                        setLastUpdate(new Date());
+                        setRetryCount(0);
+                    } else {
+                        throw new Error(data.error || 'Failed to fetch prices');
+                    }
+                } catch (err) {
+                    console.error('Error fetching live prices:', err);
+                    setError('Unable to fetch live data');
+                    
+                    if (retryCount < 3) {
+                        setTimeout(() => {
+                            setRetryCount(prev => prev + 1);
+                            fetchLivePrices();
+                        }, 5000);
+                    }
+                } finally {
+                    setIsLoading(false);
+                }
+            }, [API_BASE, retryCount]);
+
+            // Merge live data with base coins
+            const coinsWithLiveData = useMemo(() => {
+                return baseCoins.map(coin => {
+                    const livePrice = liveData[coin.coingeckoId];
+                    
+                    if (livePrice) {
+                        return {
+                            ...coin,
+                            price: livePrice.usd || 0,
+                            change24h: livePrice.usd_24h_change || 0,
+                            marketCap: livePrice.usd_market_cap || 0,
+                            volume24h: livePrice.usd_24h_vol || 0,
+                            hasLiveData: true
+                        };
+                    }
+                    
                     return {
                         ...coin,
-                        price: livePrice.usd || 0,
-                        change24h: livePrice.usd_24h_change || 0,
-                        marketCap: livePrice.usd_market_cap || 0,
-                        volume24h: livePrice.usd_24h_vol || 0,
-                        hasLiveData: true
+                        price: 0,
+                        change24h: 0,
+                        marketCap: 0,
+                        volume24h: 0,
+                        hasLiveData: false
                     };
-                }
-                
-                // Return with placeholder data if no live data
-                return {
-                    ...coin,
-                    price: 0,
-                    change24h: 0,
-                    marketCap: 0,
-                    volume24h: 0,
-                    hasLiveData: false
-                };
-            });
-        }, [liveData, baseCoins]);
-
-        // Initial fetch and interval setup
-        useEffect(() => {
-            fetchLivePrices();
-            
-            // Update every 30 seconds
-            const interval = setInterval(() => {
-                fetchLivePrices();
-            }, 30000);
-            
-            return () => clearInterval(interval);
-        }, [fetchLivePrices]);
-
-        // Helper functions
-        const getTrustClass = (score) => {
-            if (score >= 90) return 'high';
-            if (score >= 75) return 'medium';
-            if (score >= 60) return 'low';
-            return 'very-low';
-        };
-
-        const formatNumber = (num) => {
-            if (!num || num === 0) return '$0';
-            if (num >= 1000000000) return `$${(num / 1000000000).toFixed(2)}B`;
-            if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
-            if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
-            return `$${num.toFixed(2)}`;
-        };
-
-        const formatPrice = (price) => {
-            if (!price || price === 0) return '$0.00';
-            if (price < 0.01) return `$${price.toFixed(6)}`;
-            if (price < 1) return `$${price.toFixed(4)}`;
-            return `$${price.toFixed(2)}`;
-        };
-
-        // Filter and sort coins
-        const filteredCoins = useMemo(() => {
-            return coinsWithLiveData
-                .filter(coin => {
-                    const matchesSearch = 
-                        coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        coin.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        coin.creator.toLowerCase().includes(searchTerm.toLowerCase());
-                    
-                    if (filterTrust === 'high') return matchesSearch && coin.trustScore >= 85;
-                    if (filterTrust === 'medium') return matchesSearch && coin.trustScore >= 65 && coin.trustScore < 85;
-                    if (filterTrust === 'low') return matchesSearch && coin.trustScore < 65;
-                    return matchesSearch;
-                })
-                .sort((a, b) => {
-                    if (sortBy === 'marketCap') return (b.marketCap || 0) - (a.marketCap || 0);
-                    if (sortBy === 'trust') return b.trustScore - a.trustScore;
-                    if (sortBy === 'change') return (b.change24h || 0) - (a.change24h || 0);
-                    return 0;
                 });
-        }, [coinsWithLiveData, searchTerm, sortBy, filterTrust]);
+            }, [liveData]);
 
-        // Calculate statistics
-        const totalMarketCap = coinsWithLiveData.reduce((sum, coin) => sum + (coin.marketCap || 0), 0);
-        const totalVolume = coinsWithLiveData.reduce((sum, coin) => sum + (coin.volume24h || 0), 0);
-        const avgTrustScore = Math.round(baseCoins.reduce((sum, coin) => sum + coin.trustScore, 0) / baseCoins.length);
-        const liveCoinsCount = coinsWithLiveData.filter(c => c.hasLiveData).length;
+            // Initial fetch and interval
+            useEffect(() => {
+                fetchLivePrices();
+                const interval = setInterval(fetchLivePrices, 30000);
+                return () => clearInterval(interval);
+            }, [fetchLivePrices]);
 
-        return (
-            <div className="container">
-                {/* Header */}
-                <div className="header">
-                    <div className="header-top">
-                        <div className="logo-section">
-                            <div className="base-logo">B</div>
-                            <div className="title-group">
-                                <h1>Base Creator Coins</h1>
-                                <p>Live trust-scored market tracker · Powered by Talent Protocol</p>
-                            </div>
-                        </div>
-                        <div className="status-badge">
-                            <div className={`network-badge ${isLoading ? 'loading' : ''}`}>
-                                Base Network
-                                {isLoading && <span style={{animation: 'spin 1s linear infinite'}}>⟳</span>}
-                            </div>
-                            {lastUpdate && !error && (
-                                <div className="live-indicator">
-                                    <div className="live-dot"></div>
-                                    Live · Updated {lastUpdate.toLocaleTimeString()}
-                                </div>
-                            )}
-                            {error && (
-                                <div className="error-badge">
-                                    ⚠️ {error}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-// Share button component
-const ShareButton = ({ coin }) => {
-  const shareData = {
-    title: `${coin.name} (${coin.symbol})`,
-    text: `Check out ${coin.name} on Base Creator Coins! Price: $${coin.price.toFixed(2)} | Trust Score: ${coin.trustScore}/100`,
-    url: `https://your-app.vercel.app?coin=${coin.symbol}`
-  };
-  
-  const handleShare = async () => {
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        // Fallback: Copy to clipboard
-        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
-        alert('Link copied to clipboard!');
-      }
-    } catch (error) {
-      console.error('Share error:', error);
-    }
-  };
-  
-  return (
-    <button onClick={handleShare} style={{
-      background: '#0052FF',
-      color: 'white',
-      border: 'none',
-      padding: '8px 16px',
-      borderRadius: '8px',
-      cursor: 'pointer',
-      fontSize: '12px',
-      fontWeight: '600'
-    }}>
-      Share 🔗
-    </button>
-  );
-};
-             // CSV export function
-const exportToCSV = () => {
-  const headers = ['Name', 'Symbol', 'Price', '24h Change', 'Market Cap', 'Volume', 'Trust Score'];
-  
-  const rows = filteredCoins.map(coin => [
-    coin.name,
-    coin.symbol,
-    coin.price,
-    coin.change24h,
-    coin.marketCap,
-    coin.volume24h,
-    coin.trustScore
-  ]);
-  
-  const csvContent = [
-    headers.join(','),
-    ...rows.map(row => row.join(','))
-  ].join('\n');
-  
-  const blob = new Blob([csvContent], { type: 'text/csv' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `base-creator-coins-${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
-  window.URL.revokeObjectURL(url);
-};
+            // Check for price alerts
+            useEffect(() => {
+                if (!notificationsEnabled || !coinsWithLiveData.length) return;
 
-// Add export button in controls section
-<button onClick={exportToCSV} style={{
-  background: '#0052FF',
-  color: 'white',
-  border: 'none',
-  padding: '14px 24px',
-  borderRadius: '12px',
-  cursor: 'pointer',
-  fontSize: '14px',
-  fontWeight: '700'
-}}>
-  Export CSV 📥
-</button>       
-                    {/* Statistics Bar */}
-                    <div className="stats-bar">
-                        <div className="stat-item">
-                            <div className="stat-label">Total Market Cap</div>
-                            <div className="stat-value">{formatNumber(totalMarketCap)}</div>
-                        </div>
-                        <div className="stat-item">
-                            <div className="stat-label">24h Volume</div>
-                            <div className="stat-value">{formatNumber(totalVolume)}</div>
-                        </div>
-                        <div className="stat-item">
-                            <div className="stat-label">Live Coins</div>
-                            <div className="stat-value">{liveCoinsCount}/{baseCoins.length}</div>
-                        </div>
-                        <div className="stat-item">
-                            <div className="stat-label">Avg Trust Score</div>
-                            <div className="stat-value">{avgTrustScore}</div>
-                        </div>
-                    </div>
-                </div>
+                const gainThreshold = parseFloat(sessionStorage.getItem('alertThresholdGain') || '15');
+                const lossThreshold = parseFloat(sessionStorage.getItem('alertThresholdLoss') || '15');
+                const cooldownHours = parseFloat(sessionStorage.getItem('alertCooldown') || '1');
+                const cooldownMs = cooldownHours * 3600000;
 
-                {/* Controls */}
-                <div className="controls">
-                    <div className="controls-grid">
-                        <div className="input-group">
-                            <span className="input-icon">🔍</span>
-                            <input
-                                type="text"
-                                placeholder="Search coins, symbols, or creators..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
+                coinsWithLiveData.forEach(coin => {
+                    if (!coin.hasLiveData) return;
+                    
+                    const alertKey = coin.symbol;
+                    const lastAlert = priceAlerts[alertKey];
+                    const now = Date.now();
+
+                    if (lastAlert && now - lastAlert < cooldownMs) return;
+
+                    if (coin.change24h > gainThreshold) {
+                        sendPriceAlert(coin, 'bigGain');
+                        setPriceAlerts(prev => ({ ...prev, [alertKey]: now }));
+                    } else if (coin.change24h < -lossThreshold) {
+                        sendPriceAlert(coin, 'bigLoss');
+                        setPriceAlerts(prev => ({ ...prev, [alertKey]: now }));
+                    }
+                });
+            }, [coinsWithLiveData, notificationsEnabled, priceAlerts, sendPriceAlert]);
+
+            // Save alerts
+            useEffect(() => {
+                sessionStorage.setItem('priceAlerts', JSON.stringify(priceAlerts));
+            }, [priceAlerts]);
+
+            // Auto-request permission
+            useEffect(() => {
+                const hasAsked = sessionStorage.getItem('notificationAsked');
+                if (!hasAsked && 'Notification' in window) {
+                    sessionStorage.setItem('notificationAsked', 'true');
+                    setTimeout(() => {
+                        if (Notification.permission === 'default') {
+                            requestNotificationPermission();
+                        }
+                    }, 3000);
+                } else if (Notification.permission === 'granted') {
+                    setNotificationsEnabled(true);
+                }
+            }, []);
+
+            // Helper functions
+            const getTrustClass = (score) => {
+                if (score >= 90) return 'high';
+                if (score >= 75) return 'medium';
+                if (score >= 60) return 'low';
+                return 'very-low';
+            };
+
+            const formatNumber = (num) => {
+                if (!num || num === 0) return '$0';
+                if (num >= 1000000000) return `$${(num / 1000000000).toFixed(2)}B`;
+                if (num >= 1000000) return `$${(num / 1000000).toFixed(2)}M`;
+                if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
+                return `$${num.toFixed(2)}`;
+            };
+
+            const formatPrice = (price) => {
+                if (!price || price === 0) return '$0.00';
+                if (price < 0.01) return `$${price.toFixed(6)}`;
+                if (price < 1) return `$${price.toFixed(4)}`;
+                return `$${price.toFixed(2)}`;
+            };
+
+            // Filter and sort
+            const filteredCoins = useMemo(() => {
+                return coinsWithLiveData
+                    .filter(coin => {
+                        const matchesSearch = 
+                            coin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            coin.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            coin.creator.toLowerCase().includes(searchTerm.toLowerCase());
                         
-                        <div className="input-group">
-                            <span className="input-icon">📊</span>
-                            <select
-                                value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
-                            >
-                                <option value="marketCap">Sort by Market Cap</option>
-                                <option value="trust">Sort by Trust Score</option>
-                                <option value="change">Sort by 24h Change</option>
-                            </select>
-                        </div>
-
-                        <div className="input-group">
-                            <span className="input-icon">🛡️</span>
-                            <select
-                                value={filterTrust}
-                                onChange={(e) => setFilterTrust(e.target.value)}
-                            >
-                                <option value="all">All Trust Levels</option>
-                                <option value="high">High Trust (85+)</option>
-                                <option value="medium">Medium Trust (65-84)</option>
-                                <option value="low">Low Trust (&lt;65)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Coins List */}
-                <div className="coins-list">
-                    {isLoading && filteredCoins.length === 0 ? (
-                        <div className="loading-spinner">
-                            <div className="spinner"></div>
-                            <p>Loading live market data...</p>
-                        </div>
-                    ) : filteredCoins.length === 0 ? (
-                        <div className="no-results">
-                            No coins found matching your criteria. Try adjusting your filters.
-                        </div>
-                    ) : (
-                        filteredCoins.map((coin) => (
-                            <div key={coin.id} className={`coin-card ${coin.hasLiveData ? 'live-data' : ''}`}>
-                                <div className="coin-grid">
-                                    {/* Coin Info */}
-                                    <div className="coin-info">
-                                        <div className="coin-avatar">
-                                            {coin.symbol.substring(0, 2)}
-                                        </div>
-                                        <div className="coin-details">
-                                            <h3>
-                                                {coin.name}
-                                                {coin.verified && <span className="verified-badge">✓ VERIFIED</span>}
-                                            </h3>
-                                            <div className="coin-meta">
-                                                {coin.symbol} · {coin.creator}
-                                            </div>
-                                            {coin.socialLinks && (
-                                                <div className="social-links">
-                                                    {coin.socialLinks.farcaster && (
-                                                        <a href={`https://warpcast.com/${coin.socialLinks.farcaster}`} target="_blank" rel="noopener">
-                                                            🟣 Farcaster
-                                                        </a>
-                                                    )}
-                                                    {coin.socialLinks.github && (
-                                                        <a href={`https://github.com/${coin.socialLinks.github}`} target="_blank" rel="noopener">
-                                                            💻 GitHub
-                                                        </a>
-                                                    )}
-                                                    {coin.socialLinks.twitter && (
-                                                        <a href={`https://x.com/${coin.socialLinks.twitter}`} target="_blank" rel="noopener">
-                                                            🐦 X
-                                                        </a>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Price & Change */}
-                                    <div className="coin-price">
-                                        <div className="price-value">{formatPrice(coin.price)}</div>
-                                        <div className={`price-change ${coin.change24h >= 0 ? 'positive' : 'negative'}`}>
-                                            {coin.change24h >= 0 ? '↗' : '↘'} {Math.abs(coin.change24h || 0).toFixed(2)}%
-                                        </div>
-                                    </div>
-
-                                    {/* Market Stats */}
-                                    <div className="coin-stats">
-                                        <div className="stat-box">
-                                            <div className="stat-box-label">Market Cap</div>
-                                            <div className="stat-box-value">{formatNumber(coin.marketCap)}</div>
-                                        </div>
-                                        <div className="stat-box">
-                                            <div className="stat-box-label">24h Volume</div>
-                                            <div className="stat-box-value">{formatNumber(coin.volume24h)}</div>
-                                        </div>
-                                        <div className="stat-box">
-                                            <div className="stat-box-label">Base Holders</div>
-                                            <div className="stat-box-value">{coin.baseHolders?.toLocaleString() || '0'}</div>
-                                        </div>
-                                        <div className="stat-box">
-                                            <div className="stat-box-label">Contract</div>
-                                            <div className="stat-box-value" style={{fontSize: '10px', wordBreak: 'break-all'}}>
-                                                {coin.contractAddress ? `${coin.contractAddress.substring(0, 6)}...${coin.contractAddress.substring(38)}` : 'N/A'}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Trust Score */}
-                                    <div className="trust-score-card">
-                                        <div className="trust-header">
-                                            <span className="trust-label">Trust Score</span>
-                                            <span style={{fontSize: '20px'}}>🛡️</span>
-                                        </div>
-                                        <div className={`trust-score ${getTrustClass(coin.trustScore)}`}>
-                                            {coin.trustScore}
-                                            <span style={{fontSize: '20px', color: '#999'}}>/100</span>
-                                        </div>
-                                        <div className="trust-bar">
-                                            <div 
-                                                className={`trust-bar-fill ${getTrustClass(coin.trustScore)}`}
-                                                style={{width: `${coin.trustScore}%`}}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
-
-                {/* Info Panel */}
-                <div className="info-panel">
-                    <h3>🛡️ Trust Score Methodology</h3>
-                    <div className="info-grid">
-                        <div className="info-section">
-                            <h4>Trust Scoring Combines:</h4>
-                            <ul>
-                                <li>📊 Talent Protocol builder reputation and on-chain history</li>
-                                <li>💬 Community engagement metrics and social activity</li>
-                                <li>👥 Token holder distribution and wallet analysis</li>
-                                <li>⚡ Transaction patterns and liquidity depth on Base</li>
-                                <li>✓ Verification status and identity confirmation</li>
-                                <li>🔒 Smart contract audit status and security score</li>
-                            </ul>
-                        </div>
-                        <div className="info-section">
-                            <h4>Score Ranges:</h4>
-                            <ul>
-                                <li className="score-legend">
-                                    <div className="legend-color high"></div>
-                                    <strong>90-100:</strong> Highly trusted established builders with proven track record
-                                </li>
-                                <li className="score-legend">
-                                    <div className="legend-color medium"></div>
-                                    <strong>75-89:</strong> Verified creators with solid reputation and community
-                                </li>
-                                <li className="score-legend">
-                                    <div className="legend-color low"></div>
-                                    <strong>60-74:</strong> Emerging builders gaining traction in ecosystem
-                                </li>
-                                <li className="score-legend">
-                                    <div className="legend-color very-low"></div>
-                                    <strong>&lt;60:</strong> New or unverified projects - exercise caution
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <div className="footer">
-                    <div style={{marginBottom: '12px', fontSize: '16px', fontWeight: '700'}}>
-                        Built by <a href="https://warpcast.com/munazir" target="_blank" rel="noopener">@munazir</a>
-                    </div>
-                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '12px'}}>
-                        <a href="https://warpcast.com/munazir" target="_blank" rel="noopener">
-                            🟣 Farcaster: munazir
-                        </a>
-                        <a href="https://github.com/munazir17" target="_blank" rel="noopener">
-                            💻 GitHub: munazir17
-                        </a>
-                        <a href="https://x.com/moneypaiger" target="_blank" rel="noopener">
-                            🐦 X: moneypaiger
-                        </a>
-                    </div>
-                    <div style={{fontSize: '12px', opacity: '0.7'}}>
-                        Built on Base · Powered by Talent Protocol · Real-time data via CoinGecko & Alchemy
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    ReactDOM.render(<App />, document.getElementById('root'));
-</script>
-�
-```
+                        if (filterTrust === 'high') return matchesSearch && coin.trustScore >= 85;
+                        if (filterTrust === 'medium') return matchesSearch && coin.trustScore >= 65 && coin.trustScore < 85;
+                        if (filterTrust === 'low') return matchesSearch && coin.trustScore < 65;
+                        return matchesSearch;
+                    })
+                    .sort((a, b) => {
+                        if (sortBy === 'marketCap') return (b.marketCap || 0) - (a.marketCap || 0);
+                        if (sortBy

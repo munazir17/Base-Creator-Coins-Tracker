@@ -1,0 +1,13 @@
+{
+  "name": "base-creator-coins",
+  "version": "1.0.0",
+  "description": "Trust-scored market tracker for Base creator tokens",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["base", "blockchain", "tokens", "trust-score"],
+  "author": "munazir",
+  "license": "MIT"
+}

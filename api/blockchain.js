@@ -2,7 +2,7 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   
-  const ALCHEMY_URL = process.env.p3fcHr2TZ-h9k1ALbIUBa;
+  const ALCHEMY_URL = process.env.CG-us6Y6pbEC6SjSx2r7wyrTauz;
   const { tokenAddress } = req.query;
   
   try {

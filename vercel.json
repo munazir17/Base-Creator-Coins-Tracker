@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 10
+    }
+  },
+  "env": {
+    "COINGECKO_API_KEY": "CG-us6Y6pbEC6SjSx2r7wyrTauz",
+    "ALCHEMY_BASE_URL": "https://base-mainnet.g.alchemy.com/v2/81G-nrhcCLb_k0rg7WNnm",
+    "TALENT_API_KEY": "cb4dfbcc3d0cea99283eee59ecbefb30cce177f4acdcef61db668e5030c2"
+  }
+}

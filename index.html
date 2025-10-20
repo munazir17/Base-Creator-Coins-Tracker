@@ -566,7 +566,52 @@ const sendPriceAlert = (coin, price, change) => {
     });
   }
 };
+// Dark mode state
+const [darkMode, setDarkMode] = useState(() => {
+  const saved = localStorage.getItem('darkMode');
+  return saved ? JSON.parse(saved) : false;
+});
 
+// Apply dark mode
+useEffect(() => {
+  if (darkMode) {
+    document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)';
+  } else {
+    document.body.style.background = 'linear-gradient(135deg, #0052FF 0%, #0028A0 100%)';
+  }
+  localStorage.setItem('darkMode', JSON.stringify(darkMode));
+}, [darkMode]);
+
+// Toggle button
+<button 
+  onClick={() => setDarkMode(!darkMode)}
+  style={{
+    background: darkMode ? '#fff' : '#000',
+    color: darkMode ? '#000' : '#fff',
+    border: 'none',
+    padding: '12px',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    fontSize: '20px'
+  }}
+>
+  {darkMode ? '☀️' : '🌙'}
+</button>
+    // Create public/logos/ folder with coin logos
+const CoinLogo = ({ symbol }) => (
+  <img 
+    src={`/logos/${symbol.toLowerCase()}.png`}
+    alt={symbol}
+    onError={(e) => {
+      e.target.src = '/logos/default.png'; // Fallback
+    }}
+    style={{
+      width: '56px',
+      height: '56px',
+      borderRadius: '16px'
+    }}
+  />
+);
 // Check price thresholds
 useEffect(() => {
   coinsWithLiveData.forEach(coin => {
@@ -1000,7 +1045,84 @@ const App = () => {
                             )}
                         </div>
                     </div>
+// Share button component
+const ShareButton = ({ coin }) => {
+  const shareData = {
+    title: `${coin.name} (${coin.symbol})`,
+    text: `Check out ${coin.name} on Base Creator Coins! Price: $${coin.price.toFixed(2)} | Trust Score: ${coin.trustScore}/100`,
+    url: `https://your-app.vercel.app?coin=${coin.symbol}`
+  };
+  
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: Copy to clipboard
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      console.error('Share error:', error);
+    }
+  };
+  
+  return (
+    <button onClick={handleShare} style={{
+      background: '#0052FF',
+      color: 'white',
+      border: 'none',
+      padding: '8px 16px',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      fontSize: '12px',
+      fontWeight: '600'
+    }}>
+      Share 🔗
+    </button>
+  );
+};
+             // CSV export function
+const exportToCSV = () => {
+  const headers = ['Name', 'Symbol', 'Price', '24h Change', 'Market Cap', 'Volume', 'Trust Score'];
+  
+  const rows = filteredCoins.map(coin => [
+    coin.name,
+    coin.symbol,
+    coin.price,
+    coin.change24h,
+    coin.marketCap,
+    coin.volume24h,
+    coin.trustScore
+  ]);
+  
+  const csvContent = [
+    headers.join(','),
+    ...rows.map(row => row.join(','))
+  ].join('\n');
+  
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `base-creator-coins-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+};
 
+// Add export button in controls section
+<button onClick={exportToCSV} style={{
+  background: '#0052FF',
+  color: 'white',
+  border: 'none',
+  padding: '14px 24px',
+  borderRadius: '12px',
+  cursor: 'pointer',
+  fontSize: '14px',
+  fontWeight: '700'
+}}>
+  Export CSV 📥
+</button>       
                     {/* Statistics Bar */}
                     <div className="stats-bar">
                         <div className="stat-item">

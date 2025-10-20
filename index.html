@@ -936,4 +936,365 @@ Looking at your HTML, I can see the code is **very messy** with duplicate sectio
                     })
                     .sort((a, b) => {
                         if (sortBy === 'marketCap') return (b.marketCap || 0) - (a.marketCap || 0);
-                        if (sortBy
+                        if (sortBy === 'trust') return b.trustScore - a.trustScore;
+                        if (sortBy === 'change') return (b.change24h || 0) - (a.change24h || 0);
+                        return 0;
+                    });
+            }, [coinsWithLiveData, searchTerm, sortBy, filterTrust]);
+
+            // Calculate statistics
+            const totalMarketCap = coinsWithLiveData.reduce((sum, coin) => sum + (coin.marketCap || 0), 0);
+            const totalVolume = coinsWithLiveData.reduce((sum, coin) => sum + (coin.volume24h || 0), 0);
+            const avgTrustScore = Math.round(baseCoins.reduce((sum, coin) => sum + coin.trustScore, 0) / baseCoins.length);
+            const liveCoinsCount = coinsWithLiveData.filter(c => c.hasLiveData).length;
+
+            return (
+                <div className="container">
+                    {/* Header */}
+                    <div className="header">
+                        <div className="header-top">
+                            <div className="logo-section">
+                                <div className="base-logo">B</div>
+                                <div className="title-group">
+                                    <h1>Base Creator Coins</h1>
+                                    <p>Live trust-scored market tracker · Powered by Talent Protocol</p>
+                                </div>
+                            </div>
+                            <div className="status-badge">
+                                <div className={`network-badge ${isLoading ? 'loading' : ''}`}>
+                                    Base Network
+                                    {isLoading && <span style={{animation: 'spin 1s linear infinite'}}>⟳</span>}
+                                </div>
+                                
+                                {/* Notification Button */}
+                                <button
+                                    onClick={requestNotificationPermission}
+                                    className={`notification-btn ${notificationsEnabled ? 'enabled' : 'disabled'}`}
+                                >
+                                    {notificationsEnabled ? '🔔 Alerts ON' : '🔕 Enable Alerts'}
+                                </button>
+                                
+                                {lastUpdate && !error && (
+                                    <div className="live-indicator">
+                                        <div className="live-dot"></div>
+                                        Live · Updated {lastUpdate.toLocaleTimeString()}
+                                    </div>
+                                )}
+                                {error && (
+                                    <div className="error-badge">
+                                        ⚠️ {error}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Statistics Bar */}
+                        <div className="stats-bar">
+                            <div className="stat-item">
+                                <div className="stat-label">Total Market Cap</div>
+                                <div className="stat-value">{formatNumber(totalMarketCap)}</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-label">24h Volume</div>
+                                <div className="stat-value">{formatNumber(totalVolume)}</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-label">Live Coins</div>
+                                <div className="stat-value">{liveCoinsCount}/{baseCoins.length}</div>
+                            </div>
+                            <div className="stat-item">
+                                <div className="stat-label">Avg Trust Score</div>
+                                <div className="stat-value">{avgTrustScore}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Controls */}
+                    <div className="controls">
+                        <div className="controls-grid">
+                            <div className="input-group">
+                                <span className="input-icon">🔍</span>
+                                <input
+                                    type="text"
+                                    placeholder="Search coins, symbols, or creators..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
+                            
+                            <div className="input-group">
+                                <span className="input-icon">📊</span>
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                >
+                                    <option value="marketCap">Sort by Market Cap</option>
+                                    <option value="trust">Sort by Trust Score</option>
+                                    <option value="change">Sort by 24h Change</option>
+                                </select>
+                            </div>
+
+                            <div className="input-group">
+                                <span className="input-icon">🛡️</span>
+                                <select
+                                    value={filterTrust}
+                                    onChange={(e) => setFilterTrust(e.target.value)}
+                                >
+                                    <option value="all">All Trust Levels</option>
+                                    <option value="high">High Trust (85+)</option>
+                                    <option value="medium">Medium Trust (65-84)</option>
+                                    <option value="low">Low Trust (&lt;65)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Coins List */}
+                    <div className="coins-list">
+                        {isLoading && filteredCoins.length === 0 ? (
+                            <div className="loading-spinner">
+                                <div className="spinner"></div>
+                                <p>Loading live market data...</p>
+                            </div>
+                        ) : filteredCoins.length === 0 ? (
+                            <div className="no-results">
+                                No coins found matching your criteria. Try adjusting your filters.
+                            </div>
+                        ) : (
+                            filteredCoins.map((coin) => (
+                                <div key={coin.id} className={`coin-card ${coin.hasLiveData ? 'live-data' : ''}`}>
+                                    <div className="coin-grid">
+                                        {/* Coin Info */}
+                                        <div className="coin-info">
+                                            <div className="coin-avatar">
+                                                {coin.symbol.substring(0, 2)}
+                                            </div>
+                                            <div className="coin-details">
+                                                <h3>
+                                                    {coin.name}
+                                                    {coin.verified && <span className="verified-badge">✓ VERIFIED</span>}
+                                                </h3>
+                                                <div className="coin-meta">
+                                                    {coin.symbol} · {coin.creator}
+                                                </div>
+                                                {coin.socialLinks && (
+                                                    <div className="social-links">
+                                                        {coin.socialLinks.farcaster && (
+                                                            <a href={`https://warpcast.com/${coin.socialLinks.farcaster}`} target="_blank" rel="noopener noreferrer">
+                                                                🟣 Farcaster
+                                                            </a>
+                                                        )}
+                                                        {coin.socialLinks.github && (
+                                                            <a href={`https://github.com/${coin.socialLinks.github}`} target="_blank" rel="noopener noreferrer">
+                                                                💻 GitHub
+                                                            </a>
+                                                        )}
+                                                        {coin.socialLinks.twitter && (
+                                                            <a href={`https://x.com/${coin.socialLinks.twitter}`} target="_blank" rel="noopener noreferrer">
+                                                                🐦 X
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Price & Change */}
+                                        <div className="coin-price">
+                                            <div className="price-value">{formatPrice(coin.price)}</div>
+                                            <div className={`price-change ${coin.change24h >= 0 ? 'positive' : 'negative'}`}>
+                                                {coin.change24h >= 0 ? '↗' : '↘'} {Math.abs(coin.change24h || 0).toFixed(2)}%
+                                            </div>
+                                        </div>
+
+                                        {/* Market Stats */}
+                                        <div className="coin-stats">
+                                            <div className="stat-box">
+                                                <div className="stat-box-label">Market Cap</div>
+                                                <div className="stat-box-value">{formatNumber(coin.marketCap)}</div>
+                                            </div>
+                                            <div className="stat-box">
+                                                <div className="stat-box-label">24h Volume</div>
+                                                <div className="stat-box-value">{formatNumber(coin.volume24h)}</div>
+                                            </div>
+                                            <div className="stat-box">
+                                                <div className="stat-box-label">Base Holders</div>
+                                                <div className="stat-box-value">{coin.baseHolders?.toLocaleString() || '0'}</div>
+                                            </div>
+                                            <div className="stat-box">
+                                                <div className="stat-box-label">Contract</div>
+                                                <div className="stat-box-value" style={{fontSize: '10px', wordBreak: 'break-all'}}>
+                                                    {coin.contractAddress ? `${coin.contractAddress.substring(0, 6)}...${coin.contractAddress.substring(38)}` : 'N/A'}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Trust Score */}
+                                        <div className="trust-score-card">
+                                            <div className="trust-header">
+                                                <span className="trust-label">Trust Score</span>
+                                                <span style={{fontSize: '20px'}}>🛡️</span>
+                                            </div>
+                                            <div className={`trust-score ${getTrustClass(coin.trustScore)}`}>
+                                                {coin.trustScore}
+                                                <span style={{fontSize: '20px', color: '#999'}}>/100</span>
+                                            </div>
+                                            <div className="trust-bar">
+                                                <div 
+                                                    className={`trust-bar-fill ${getTrustClass(coin.trustScore)}`}
+                                                    style={{width: `${coin.trustScore}%`}}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+
+                    {/* Alert Settings Panel */}
+                    {notificationsEnabled && (
+                        <div className="info-panel">
+                            <h3>🔔 Price Alert Settings</h3>
+                            <div className="alert-settings">
+                                <div className="settings-grid">
+                                    <div className="setting-item">
+                                        <label>Big Gain Alert (%)</label>
+                                        <input 
+                                            type="number" 
+                                            defaultValue="15"
+                                            min="5"
+                                            max="50"
+                                            onChange={(e) => {
+                                                sessionStorage.setItem('alertThresholdGain', e.target.value);
+                                            }}
+                                        />
+                                        <span>Alert when price rises by this %</span>
+                                    </div>
+                                    
+                                    <div className="setting-item">
+                                        <label>Big Loss Alert (%)</label>
+                                        <input 
+                                            type="number" 
+                                            defaultValue="15"
+                                            min="5"
+                                            max="50"
+                                            onChange={(e) => {
+                                                sessionStorage.setItem('alertThresholdLoss', e.target.value);
+                                            }}
+                                        />
+                                        <span>Alert when price drops by this %</span>
+                                    </div>
+
+                                    <div className="setting-item">
+                                        <label>Alert Cooldown</label>
+                                        <select 
+                                            defaultValue="1"
+                                            onChange={(e) => {
+                                                sessionStorage.setItem('alertCooldown', e.target.value);
+                                            }}
+                                        >
+                                            <option value="0.5">30 minutes</option>
+                                            <option value="1">1 hour</option>
+                                            <option value="2">2 hours</option>
+                                            <option value="4">4 hours</option>
+                                            <option value="24">24 hours</option>
+                                        </select>
+                                        <span>Time between alerts for same coin</span>
+                                    </div>
+                                </div>
+
+                                <div style={{padding: '12px', background: 'white', borderRadius: '8px', border: '1px solid #e0e0e0', marginBottom: '16px'}}>
+                                    <p style={{fontSize: '13px', color: '#666', margin: 0}}>
+                                        💡 <strong>Tip:</strong> Notifications will appear even when this tab is in the background!
+                                    </p>
+                                </div>
+
+                                <button
+                                    onClick={() => {
+                                        sendPriceAlert(
+                                            { 
+                                                name: 'Test Coin', 
+                                                symbol: 'TEST', 
+                                                price: 1.23, 
+                                                change24h: 25.5 
+                                            }, 
+                                            'bigGain'
+                                        );
+                                    }}
+                                    className="btn btn-primary"
+                                >
+                                    🔔 Send Test Notification
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Trust Score Methodology */}
+                    <div className="info-panel">
+                        <h3>🛡️ Trust Score Methodology</h3>
+                        <div className="info-grid">
+                            <div className="info-section">
+                                <h4>Trust Scoring Combines:</h4>
+                                <ul>
+                                    <li>📊 Talent Protocol builder reputation and on-chain history</li>
+                                    <li>💬 Community engagement metrics and social activity</li>
+                                    <li>👥 Token holder distribution and wallet analysis</li>
+                                    <li>⚡ Transaction patterns and liquidity depth on Base</li>
+                                    <li>✓ Verification status and identity confirmation</li>
+                                    <li>🔒 Smart contract audit status and security score</li>
+                                </ul>
+                            </div>
+                            <div className="info-section">
+                                <h4>Score Ranges:</h4>
+                                <ul>
+                                    <li className="score-legend">
+                                        <div className="legend-color high"></div>
+                                        <strong>90-100:</strong> Highly trusted established builders
+                                    </li>
+                                    <li className="score-legend">
+                                        <div className="legend-color medium"></div>
+                                        <strong>75-89:</strong> Verified creators with solid reputation
+                                    </li>
+                                    <li className="score-legend">
+                                        <div className="legend-color low"></div>
+                                        <strong>60-74:</strong> Emerging builders gaining traction
+                                    </li>
+                                    <li className="score-legend">
+                                        <div className="legend-color very-low"></div>
+                                        <strong>&lt;60:</strong> New or unverified projects
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="footer">
+                        <div style={{marginBottom: '12px', fontSize: '16px', fontWeight: '700'}}>
+                            Built by <a href="https://warpcast.com/munazir" target="_blank" rel="noopener noreferrer">@munazir</a>
+                        </div>
+                        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '12px'}}>
+                            <a href="https://warpcast.com/munazir" target="_blank" rel="noopener noreferrer">
+                                🟣 Farcaster: munazir
+                            </a>
+                            <a href="https://github.com/munazir17" target="_blank" rel="noopener noreferrer">
+                                💻 GitHub: munazir17
+                            </a>
+                            <a href="https://x.com/moneypaiger" target="_blank" rel="noopener noreferrer">
+                                🐦 X: moneypaiger
+                            </a>
+                        </div>
+                        <div style={{fontSize: '12px', opacity: '0.7'}}>
+                            Built on Base · Powered by Talent Protocol · Real-time data via CoinGecko & Alchemy
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
+
